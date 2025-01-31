@@ -85,7 +85,7 @@
 10C8 JSR $FFD2    ; call CHROUT
 10CB JMP $1084    ; jump to back to XREMOTE
 10CE JMP $1189    ; jump to PAUSE
-10D1 JMP $1266    ; jump to TOGGLEBAUD
+10D1 JMP $126B    ; jump to TOGGLEBAUD
 10D4 LDA #$C3    ; load 195 into AC
 10D6 STA $900C    ; store AC into 36876 (note)
 10D9 LDA #$0A    ; load 10 into AC
@@ -212,7 +212,7 @@
 11DD JMP $11F3    ; jump to PAUSEDRAIN
 11E0 LDA $13FC    ; load BUFFER STATUS into AC
 11E3 CMP #$00    ; compare to 00 (BUFFER OFF)
-11E5 BEQ $1242    ; if OFF, branch to PAUSEEXIT
+11E5 BEQ $1247    ; if OFF, branch to PAUSEEXIT
 11E7 CMP #$01    ; compare to 01 (FILLING)
 11E9 BEQ $119F    ; if FILLING, branch to PREMOTE
 11EB CMP #$02    ; compare to 02 (DRAINING)
@@ -228,7 +228,7 @@
 1201 LDX $50    ; load contents of 80 into XR (BUFFER FILL HI BYTE)
 1203 CPX $52    ; compare to contents of 82 (BUFFER DRAIN HI BYTE)
 1205 BNE $120A    ; if not equal, branch to PAUSEDRAIN2
-1207 JMP $1242    ; otherwise jump to PAUSEEXIT
+1207 JMP $1247    ; otherwise jump to PAUSEEXIT
 120A JSR $112E    ; call CUSORON
 120D LDY #$00    ; load zero into YR
 120F LDA ($51),Y    ; load next char from BUFFER into AC
@@ -237,7 +237,7 @@
 1215 PLA     ; pull AC off of stack
 1216 JSR $FFD2    ; call CHROUT
 1219 JSR $110F    ; call CHECKQUOTE
-121C JSR $124F    ; call WAIT (to slow down output)
+121C JSR $1254    ; call WAIT (to slow down output)
 121F CLC     ; clear carry flag
 1220 LDA $51    ; load contents of 81 into AC
 1222 ADC #$01    ; add one to contents of 81
@@ -246,42 +246,44 @@
 1228 ADC #$00    ; add zero to contents of 82 (force carry)
 122A STA $52    ; update 82
 122C CMP #$1C    ; compare BUFFER FILL address with 7168 (top of RAM)
-122E BEQ $1242    ; if equal, jump to PAUSEEXIT
+122E BEQ $1247    ; if equal, jump to PAUSEEXIT
 1230 JSR $FFE4    ; call GETIN
 1233 CMP #$85    ; compare AC to 133 (F1 key)
-1235 BNE $123F    ; if not F1, branch to PAUSECONT
+1235 BNE $1244    ; if not F1, branch to PAUSECONT
 1237 LDX #$0A    ; load 10 into XR (BLACK ON RED)
 1239 STX $900F    ; store XR into 36879
-123C JMP $119F    ; jump to PREMOTE
-123F JMP $11F8    ; otherwise, jump back to PDCHECK
-1242 LDA #$00    ; load zero into AC
-1244 STA $13FC    ; update BUFFER STATUS
-1247 LDX #$08    ; load 08 into XR (BLACK ON BLACK)
-1249 STX $900F    ; store XR into 36879
-124C JMP $1084    ; jump back to XREMOTE
-124F LDY #$00    ; load zero into YR
-1251 LDX #$00    ; load zero into XR
-1253 CPY #$FF    ; compare YR with 255
-1255 BEQ $125B    ; if 255, branch to WAITNEXT
-1257 INY     ; otherwise increment YR by one
-1258 JMP $1253    ; jump back to WAITLOOP
-125B INX     ; increment XR by one
-125C CPX #$02    ; compare XR to 2 (3 loops, 0,1,2)
-125E BEQ $1265    ; if equal, branch to WAITEXIT
-1260 LDY #$00    ; load zero into YR
-1262 JMP $1253    ; jump back to WAITLOOP
-1265 RTS     ; return from subroutine
-1266 LDA $13FD    ; load PARAMS into AC
-1269 CMP #$08    ; compare to 8 = 1200 baud
-126B BEQ $1278    ; if 1200 baud, branch to 300BAUD
-126D LDA #$08    ; load 08 into AC
-126F STA $13FD    ; store 08 into PARAMS (08 = 1200 baud)
-1272 JSR $10FA    ; call EXIT
-1275 JMP $100D    ; jump to INIT
-1278 LDA #$06    ; load 06 into AC
-127A STA $13FD    ; store 06 into PARAMS (06 = 300 baud)
-127D JSR $10FA    ; call EXIT
-1280 JMP $100D    ; jump to INIT
+123C LDX #$01    ; load one into XR
+123E STX $13FC    ; update BUFFER STATUS
+1241 JMP $119F    ; jump to PREMOTE
+1244 JMP $11F8    ; otherwise, jump back to PDCHECK
+1247 LDA #$00    ; load zero into AC
+1249 STA $13FC    ; update BUFFER STATUS
+124C LDX #$08    ; load 08 into XR (BLACK ON BLACK)
+124E STX $900F    ; store XR into 36879
+1251 JMP $1084    ; jump back to XREMOTE
+1254 LDY #$00    ; load zero into YR
+1256 LDX #$00    ; load zero into XR
+1258 CPY #$FF    ; compare YR with 255
+125A BEQ $1260    ; if 255, branch to WAITNEXT
+125C INY     ; otherwise increment YR by one
+125D JMP $1258    ; jump back to WAITLOOP
+1260 INX     ; increment XR by one
+1261 CPX #$02    ; compare XR to 2 (3 loops, 0,1,2)
+1263 BEQ $126A    ; if equal, branch to WAITEXIT
+1265 LDY #$00    ; load zero into YR
+1267 JMP $1258    ; jump back to WAITLOOP
+126A RTS     ; return from subroutine
+126B LDA $13FD    ; load PARAMS into AC
+126E CMP #$08    ; compare to 8 = 1200 baud
+1270 BEQ $127D    ; if 1200 baud, branch to 300BAUD
+1272 LDA #$08    ; load 08 into AC
+1274 STA $13FD    ; store 08 into PARAMS (08 = 1200 baud)
+1277 JSR $10FA    ; call EXIT
+127A JMP $100D    ; jump to INIT
+127D LDA #$06    ; load 06 into AC
+127F STA $13FD    ; store 06 into PARAMS (06 = 300 baud)
+1282 JSR $10FA    ; call EXIT
+1285 JMP $100D    ; jump to INIT
 
 VARIABLES							
 START	END	CODE	NAME	LEN	VALUE		COMMENT
