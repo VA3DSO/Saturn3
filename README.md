@@ -16,9 +16,13 @@ Pressing F1 again will output those buffer characters to the screen, and then op
 
 You'll know that the pause feature is activated because when you press F1 the first time, the screen border will turn from black to red. Then when 
 you press F1 again (to "drain" the buffer back onto the screen), the border will turn to yellow. Once all the characters from the buffer have been
-output, the border returns to black.  
+output, the border returns to black. While emptying the buffer (yellow border) you can hit F1 yet again to enable the pause (red border). This way
+you can work your way through a long text file. As long as the 2048 byte buffer doesn't fill up, you will be fine.
 
-This will allow you to surf pretty much any BBS, and read messages and small bulletins without having to constantly try to re-read them to get a
+If 2048 bytes proves insufficient, I may release a version of this that runs on an expanded VIC and uses the expanded memory to provide an 8K, 16K
+or even a 24K buffer. But I doubt that will be needed.
+
+This terminal will allow you to surf pretty much any BBS, and read messages and small bulletins without having to constantly try to re-read them to get a
 look at all the text.  
 
 ## System Requirements
