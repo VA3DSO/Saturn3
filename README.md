@@ -43,3 +43,21 @@ Saturn 3 runs on an unexpanded VIC-20. It requires a Hayes compatible modem (ie:
 - press the F5 key to switch between 300 and 1200 baud
 - press the F7 key to exit the terminal program
 
+## 16K Version  
+This program leverages the 16K RAM expander on the VIC-20 to provide a very large (approx 14K) buffer to store incoming characters so that you can pause the output at your leisure and read it on your 22-column VIC-20. I picked 16K because that is the expander I had as a kid with my VIC - but you could easily modify it to work with other memory configurations.
+
+The 16K version has an function key changes:
+- press the F1 key at anytime to pause the screen output
+- press the F1 key again to resume the screen output
+- press the F3 key to switch between PETSCII and ASCII mode
+- press the F5 key to toggle between three different color modes:
+  - black screen with color text
+  - black screen with hard-coded cyan text
+  - white screen wtih hard-coded blue text (default VIC colors)
+- press the F6 key to switch between 300 and 1200 baud
+- press the F7 key to exit the terminal program
+
+
+
+
+
