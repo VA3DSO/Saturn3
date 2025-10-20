@@ -32,6 +32,7 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
 ```
   cl65 -t vic20 --config s3.cfg -Cl -O -o s3.prg -DEXP8K s3.c
 ```
+- alternatively, download the supplied PRG or D64 files
 - transfer the PRG file onto a media your VIC-20 can read (you are on your own for this step!)
 - boot up your expanded VIC-20 (ie: using a VIC-2407 cartridge)
 - type: LOAD"S3",8
@@ -39,15 +40,15 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
 - the terminal program should load and indicate "READY"
 - to dial a BBS, type something like: ATDT BBS.DEEPSKIES.COM:6400
 - interact with the BBS as you'd like
-- F1: pause the screen output
-- F1 (again): resume the screen ouput
-- F2: toggle 5 different colour schemes
-- F3: download a file via Xmodem
-- F4: upload a file via Xmodem
-- F5: toggle baud rate (300/1200)
-- F6: toggle local echo on/off
-- F7: exit the program
-- F8: display help
+  - F1: pause the screen output
+  - F1 (again): resume the screen ouput
+  - F2: toggle 5 different colour schemes
+  - F3: download a file via Xmodem
+  - F4: upload a file via Xmodem
+  - F5: toggle baud rate (300/1200)
+  - F6: toggle local echo on/off
+  - F7: exit the program
+  - F8: display help
 
 Please report any bugs to sysop@deepskies.com and we'll see what we can do to fix them.
 
