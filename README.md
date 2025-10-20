@@ -29,7 +29,9 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
 ## Instructions
 - download the s3.c and s3.cfg files
 - using the cc65 compiler, compile the code into a PRG file - for example:
+```
   cl65 -t vic20 --config s3.cfg -Cl -O -o s3.prg -DEXP8K s3.c
+```
 - transfer the PRG file onto a media your VIC-20 can read (you are on your own for this step!)
 - boot up your expanded VIC-20 (ie: using a VIC-2407 cartridge)
 - type: LOAD"S3",8
