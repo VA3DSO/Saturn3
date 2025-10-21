@@ -37,8 +37,11 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
 - boot up your expanded VIC-20 (ie: using a VIC-2407 cartridge)
 - type: LOAD"S3",8
 - type: RUN
-- the terminal program should load and indicate "READY"
-- to dial a BBS, type something like: ATDT BBS.DEEPSKIES.COM:6400
+- the terminal program should load and indicate "READY."
+- to dial a BBS, type something like:
+```
+  atdt bbs.deepskies.com:6400
+```
 - interact with the BBS as you'd like
   - F1: pause the screen output
   - F1 (again): resume the screen ouput
