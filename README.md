@@ -43,6 +43,7 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
   atdt bbs.deepskies.com:6400
 ```
 - interact with the BBS as you'd like
+- Function Keys Assignments:
   - F1: pause the screen output
   - F1 (again): resume the screen ouput
   - F2: toggle 5 different colour schemes
