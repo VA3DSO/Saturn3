@@ -106,7 +106,7 @@ void outbyte(char ch);
 
 /* global variables */
 static char CS = OFF, CM = 1, ECHO = OFF;
-static char I[40], O[40];
+static char I[40];
 
 char main(void) {
 
@@ -604,7 +604,7 @@ void upload(void) {
     /* UPLOAD ! */
 
     char ftype, packet[128], ch, i, j, m, e, st, t;
-    char filename[20] = "@0:", sending = TRUE, p = 1, retries = 0, status = OK, retry = FALSE;
+    char filename[20], sending = TRUE, p = 1, retries = 0, status = OK, retry = FALSE;
 
     print("\n\nXmodem Upload!\n\n");
 
@@ -613,12 +613,7 @@ void upload(void) {
 
     if (strlen(I) > 0) {
 
-        strcat(filename, I);
-
-        print("\nType (P/S/U)?\n>");
-        ch = getch();
-        ftype = tolower(ch);
-        sprintf(filename, "%s,%c,r", filename, ftype);
+        sprintf(filename, "%s,r", I, ftype);
 
         print("\n\n\005Uploading... \n\n");
 
@@ -933,7 +928,6 @@ void outbyte(char ch) {
     cbm_k_ckout(5);
     cbm_k_bsout(ch);
     cbm_k_clrch();
-    /* sprintf(O, "s%i ", ch); print(O); */
 }
 
 char inbyte(char delay, char *status) {
@@ -985,8 +979,6 @@ char inbyte(char delay, char *status) {
         }
 
     } while (listening == TRUE);
-
-    /* sprintf(O, "r%i ", ch); print(O); */
 
     return ch;
 
