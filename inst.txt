@@ -1,0 +1,4 @@
+del s3
+write s3.prg s3
+quit
+

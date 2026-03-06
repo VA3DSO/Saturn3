@@ -16,7 +16,7 @@
 /*   excellent victerm300 which inspired the writing of this program. Some   */
 /*   of the functions here are based on some functions in victerm300.        */
 /*                                                                           */
-/*   Specifically: print, cursor_on, cursor_off and beep                     */
+/*   Specifically: ascii translation, print, cursor_on, cursor_off and beep  */
 /*                                                                           */
 /* This software is provided 'as-is', without any expressed or implied       */
 /* warranty.  In no event will the authors be held liable for any damages    */
@@ -81,6 +81,43 @@
 
 #define MAXRETRIES 25
 
+char f[] = {
+    0,   0,   0, 137,   0,   0,   0,   0,  20,   0,   0,   0, 147,  13,   0,   0,
+    146, 134,   0, 138,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+    48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+    64, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
+    208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218,  91,  92,  93,  94,  95,
+    0,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
+    80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,   0,   0,   0,   0,   0,
+    0,   0,   0, 137,   0,   0,   0,   0,  20,   0,   0,   0, 147,  13,   0,   0,
+    146, 134,   0, 138,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+    48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+    64, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
+    208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218,  91,  92,  93,  94,  95,
+    0,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
+    80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,   0,   0,   0,   0,   0
+};
+char t[] = {
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  13,   0,   0,
+    0,   0,   0,   0,   8,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+    48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+    64,  97,  98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+    112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,  91,  92,  93,  94,  95,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,  16,  17,   0,   0,   3,  19,   0,   0,   0,   0,   0,
+    0,   0,  16,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
+    80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+};
+
 /* local functions */
 void print(char*);
 void putch(char);
@@ -105,8 +142,8 @@ char inbyte(char, char*);
 void outbyte(char ch);
 
 /* global variables */
-static char CS = OFF, CM = 1, ECHO = OFF;
-static char I[40];
+char CS = OFF, CM = 1, ECHO = OFF, PS = ON;
+char I[40];
 
 char main(void) {
 
@@ -163,14 +200,13 @@ char main(void) {
                     show_banner(p[0]);
                     break;
                 case F6:
-                    /* echo */
-                    print("\n\nECHO ");
-                    if (ECHO == OFF) {
-                        print("ON!\n\n");
-                        ECHO = ON;
+                    /* petscii */
+                    if (PS == OFF) {
+                        print("\n\nPETSCII!\n\n");
+                        PS = ON;
                     } else {
-                        print("OFF!\n\n");
-                        ECHO = OFF;
+                        print("\n\nASCII!\n\n");
+                        PS = OFF;
                     }
                     break;
                 case F7:
@@ -185,11 +221,12 @@ char main(void) {
             }
         } else if (ch != 0) {
             cbm_k_ckout(5);
-            cbm_k_bsout(ch);
-            cbm_k_clrch();
-            if (ECHO == ON) {
-                putch(ch);
+            if (PS == OFF) {
+                cbm_k_bsout(t[ch]);
+            } else {
+                cbm_k_bsout(ch);
             }
+            cbm_k_clrch();
         }
 
         /* XREMOTE */
@@ -197,7 +234,11 @@ char main(void) {
         ch = cbm_k_getin();
         cbm_k_clrch();
         if (ch != 0) {
-            putch(ch);
+            if (PS == OFF) {
+                putch(f[ch]);
+            } else {
+                putch(ch);
+            }
         }
 
     } while(exiting == FALSE);
@@ -292,7 +333,7 @@ void beep(void) {
 }
 
 void show_banner(char baud) {
-    print("\223\010\016\300\300\300\300\300\300 \022SATURN\2223 \300\300\300\300\300\300\n\n");
+    print("\223\016\300\300\300\300\300\300 \022SATURN\2223 \300\300\300\300\300\300\n\n");
     if (baud == 8) {
         print("1200 BAUD  ");
     } else {
@@ -394,7 +435,7 @@ void pause(void) {
 void help(void) {
     print("\n\022F1\222 PAUSE   \022F2\222 COLOUR\n");
     print("\022F3\222 DOWNLD  \022F4\222 UPLOAD\n");
-    print("\022F5\222 BAUD    \022F6\222 ECHO\n");
+    print("\022F5\222 BAUD    \022F6\222 PETASC\n");
     print("\022F7\222 EXIT    \022F8\222 HELP\n\n");
     print("READY.\n");
     cursor_on();
@@ -928,6 +969,7 @@ void outbyte(char ch) {
     cbm_k_ckout(5);
     cbm_k_bsout(ch);
     cbm_k_clrch();
+    /* sprintf(I, "SND:%i ", ch); print(I); */
 }
 
 char inbyte(char delay, char *status) {
@@ -979,6 +1021,8 @@ char inbyte(char delay, char *status) {
         }
 
     } while (listening == TRUE);
+
+    /* sprintf(I, "REC:%i ", ch); print(I); */
 
     return ch;
 
