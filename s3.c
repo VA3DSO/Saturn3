@@ -62,6 +62,7 @@
 #define F6      139
 #define F8      140
 #define BUFFER  0xA000
+#define BUFSIZE 0x2000
 #define SC      0x900F
 
 #define OK      0
@@ -377,7 +378,7 @@ void pause(void) {
         if (ch != 0) {
             POKE(BP, ch);
             BP++;
-            if (BP > 0xBFFF) {
+            if (BP > BUFFER + BUFSIZE -1) {
                 BP--;
             }
         }

@@ -1,0 +1,43 @@
+# --- VIC-20 / Commodore Development Outputs ---
+
+# Common compiled/built artifacts
+*.bin
+*.crt
+*.tap
+# *.d64    // Allow this to go
+*.g64
+*.t64
+*.dhd
+*.p00
+
+# Assembler / compiler intermediates
+*.o
+*.tmp
+
+# cc65-specific
+*.cfg.bak
+*.s
+*.lib
+
+# --- Editor / IDE Files ---
+# VS Code
+.vscode/
+
+# --- OS / Shell Clutter ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Windows PowerShell history
+*.pshistory
+
+# --- Backup / Temp Files ---
+*~
+*.bak
+*.old
+*.backup
+*.tmp
+*.swp
+*.swo
+~$*.xlsm
+/Backup/
