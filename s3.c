@@ -266,6 +266,10 @@ void putch(char ch) {
 
     cursor_off();
     cbm_k_bsout(ch);
+
+    if (ch == 34) {
+        POKE(212,0);
+    }
     if (ch == 7) {
         beep();
     }
@@ -453,31 +457,31 @@ void set_colour(char set_char) {
         case 1:
             POKE(SC, 8);
             if (set_char == TRUE) {
-                putch(5);
+                cbm_k_bsout(5);
             }
             break;
         case 2:
             POKE(SC, 238);
             if (set_char == TRUE) {
-                putch(144);
+                cbm_k_bsout(144);
             }
             break;
         case 3:
             POKE(SC, 8);
             if (set_char == TRUE) {
-                putch(5);
+                cbm_k_bsout(5);
             }
             break;
         case 4:
             POKE(SC, 27);
             if (set_char == TRUE) {
-                putch(31);
+                cbm_k_bsout(31);
             }
             break;
         case 5:
             POKE(SC, 8);
             if (set_char == TRUE) {
-                putch(30);
+                cbm_k_bsout(30);
             }
             break;
     }
