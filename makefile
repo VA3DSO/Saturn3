@@ -13,6 +13,7 @@ OUT    = s3.prg
 # Default target
 all: $(OUT)
 	c1541 /home/rick/Sync/Computers/Commodore/Disks/VIC-20.dhd < inst.txt
+	c1541 s3.d64 < inst.txt
 
 $(OUT): $(SRC)
 	$(CC) $(CFLAGS) -o $(OUT) $(SRC)
