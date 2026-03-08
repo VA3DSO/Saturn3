@@ -53,6 +53,7 @@
 #define ERROR   1
 #define OFF     0
 #define ON      1
+#define RS      3
 #define F1      133
 #define F3      134
 #define F5      135
@@ -81,6 +82,18 @@
 #define JCL     162
 
 #define MAXRETRIES 25
+
+typedef struct {
+    char bbsname[17];   // 16 chars + '\0'
+    char url[33];       // 32 chars + '\0'
+    char port[6];       // 5 chars + '\0'
+    char id[11];        // 10 chars + '\0'
+    char password[10];  // 9 chars + '\0'
+} PBEntry;              // 77 total chars
+
+#pragma bss-name("PHONEBK")
+PBEntry Phonebook[20];
+#pragma bss-name("BSS");
 
 char f[] = {
     0,   0,   0, 137,   0,   0,   0,   0,  20,   0,   0,   0, 147,  13,   0,   0,
@@ -121,6 +134,7 @@ char t[] = {
 
 /* local functions */
 void print(char*);
+void dial(char*);
 void putch(char);
 void cursor_on(void);
 void cursor_off(void);
@@ -132,7 +146,7 @@ void help(void);
 void set_colour(char set_char);
 void download(void);
 void upload(void);
-void input(void);
+void input(char);
 char getch(void);
 char errorcheck(void);
 void enjoythesilence(void);
@@ -141,6 +155,11 @@ void pad(char*);
 void clearbuffer(void);
 char inbyte(char, char*);
 void outbyte(char ch);
+char get_load_drive(void);
+void load_phonebook(void);
+void save_phonebook(char);
+void show_phonebook(void);
+void edit_entry(char);
 
 /* global variables */
 char CS = OFF, CM = 1, ECHO = OFF, PS = ON;
@@ -159,6 +178,8 @@ char main(void) {
 
     cbm_open(5,2,3,p);
     POKE(169,192);
+
+    load_phonebook();
 
     do {
 
@@ -220,6 +241,9 @@ char main(void) {
                     help();
                     break;
             }
+        } else if (ch == 3) {
+            /* phonebook */
+            show_phonebook();
         } else if (ch != 0) {
             cbm_k_ckout(5);
             if (PS == OFF) {
@@ -260,6 +284,16 @@ void print(char *str) {
     }
 
     cursor_on();
+
+}
+
+void dial(char *str) {
+
+    while (*str) {
+        __A__ = *str++;
+        asm("jsr $ffd2");
+        sleep();
+    }
 
 }
 
@@ -349,6 +383,195 @@ void show_banner(char baud) {
     cursor_on();
 }
 
+char get_load_drive(void) {
+
+    char drive = PEEK(186);
+
+    if ((drive < 8) || (drive > 11)) {
+        drive = 8;   /* fall back to 8 if something weird */
+    }
+
+    return drive;
+
+}
+
+void show_phonebook(void) {
+
+    char i, ch;
+    char dialing = TRUE;
+
+    do {
+
+        print("\223\022PHONE\222BOOK\n\n");
+
+        for (i = 0; i < 20; i++) {
+            sprintf(I, "%c %-5.5s %-3.3s %-9.9s\n", i + 193, Phonebook[i].bbsname, Phonebook[i].id, Phonebook[i].password); print(I);
+        }
+
+        print(" # to Dial or Z=Edit");
+
+        ch = getch();
+
+        if((ch == 13) || (ch == 3)) {
+            print("\223");
+            dialing = FALSE;
+        } else if (ch == 'z') {
+            for (i = 0; i < 19; i++) {
+                putch(20);
+            }
+            print("Which # to Edit?");
+            ch = getch();
+            if ((ch >= 65) && (ch <= 84)) {
+                ch = ch - 65;
+                edit_entry(ch);
+            }
+        } else if ((ch >= 65) && (ch <= 84)) {
+
+            ch = ch - 65;
+            print("\223");
+
+            cbm_k_ckout(5);
+            dial("\nat\natdt ");
+            dial(Phonebook[ch].url);
+            dial(":");
+            dial(Phonebook[ch].port);
+            dial("\n");
+            cbm_k_clrch();
+
+            dialing = FALSE;
+        }
+
+    } while (dialing == TRUE);
+
+}
+
+void edit_entry(char record) {
+
+    char ch, drive;
+    PBEntry e;
+
+    print("\223\022EDIT\222ENTRY\n\n");
+
+    print("BBS:"); print(Phonebook[record].bbsname); print("\n");
+    print("URL:"); print(Phonebook[record].url); print("\n");
+    print("PRT:"); print(Phonebook[record].port); print("\n");
+    print("UID:"); print(Phonebook[record].id); print("\n");
+    print("PWD:"); print(Phonebook[record].password); print("\n\n");
+
+    print("BBS?"); input(16);
+    if (strlen(I) > 0) {
+        strcpy(e.bbsname, I);
+    } else {
+        strcpy(e.bbsname, Phonebook[record].bbsname);
+    }
+    print("URL?"); input(32);
+    if (strlen(I) > 0) {
+        strcpy(e.url, I);
+    } else {
+        strcpy(e.url, Phonebook[record].url);
+    }
+    print("PRT?"); input(5);
+    if (strlen(I) > 0) {
+        strcpy(e.port, I);
+    } else {
+        strcpy(e.port, Phonebook[record].port);
+    }
+    print("UID?"); input(10);
+    if (strlen(I) > 0) {
+        strcpy(e.id, I);
+    } else {
+        strcpy(e.id, Phonebook[record].id);
+    }
+    print("PWD?"); input(9);
+    if (strlen(I) > 0) {
+        strcpy(e.password, I);
+    } else {
+        strcpy(e.password, Phonebook[record].password);
+    }
+
+    print("\nBBS:"); print(e.bbsname); print("\n");
+    print("URL:"); print(e.url); print("\n");
+    print("PRT:"); print(e.port); print("\n");
+    print("UID:"); print(e.id); print("\n");
+    print("PWD:"); print(e.password); print("\n");
+
+    print("\nARE YOU SURE? (Y/N)");
+    ch = getch();
+    putch(toupper(ch));
+
+    if ((ch == 'y') || (ch == 'Y')) {
+
+        print("\n\nSaving...");
+
+        strcpy(Phonebook[record].bbsname, e.bbsname);
+        strcpy(Phonebook[record].url, e.url);
+        strcpy(Phonebook[record].port, e.port);
+        strcpy(Phonebook[record].id, e.id);
+        strcpy(Phonebook[record].password, e.password);
+
+        drive = get_load_drive();
+        save_phonebook(drive);
+
+    }
+
+}
+
+void load_phonebook(void) {
+
+    char drive, err, i;
+    char errbuf[3] = { 0 };
+    char *filename = "s3pb";
+
+    /* check if phone book file exists */
+    drive = get_load_drive();
+    cbm_open(15, drive, 15, "r:s3pb=s3pb");
+    cbm_read(15, errbuf, 2);        // get first 2 chars from error channel
+    err = (char)atoi(errbuf);       // convert errbuf to short int (char)
+    cbm_close(15);
+
+    if (err == 62) {
+
+        /* file not found - create a new phone book */
+        for (i = 0; i < 20; i++) {
+            strcpy(Phonebook[i].bbsname, "     ");
+            strcpy(Phonebook[i].url, "     ");
+            strcpy(Phonebook[i].port, "    ");
+            strcpy(Phonebook[i].id, "   ");
+            strcpy(Phonebook[i].password, "         ");
+        }
+
+        save_phonebook(drive);
+
+        /* at end, sett err to 63 so it loads next! */
+        err = 63;
+
+    }
+
+    if (err == 63) {
+        /* file already exists - let's load it! */
+        cbm_k_setlfs(3, drive, 1);
+        cbm_k_setnam("s3pb,u,r");
+        cbm_k_load(0, 1);
+    }
+
+    if ((err != 62) && (err != 63)) {
+        /* some other error has happend - just display error */
+        print("\022ERROR\222:"); print(errbuf); print("\n");
+    }
+
+}
+
+void save_phonebook(char drive) {
+
+    cbm_open(15, drive, 15, "s:s3pb");
+    cbm_close(15);
+
+    cbm_k_setlfs(3, drive, 1);
+    cbm_k_setnam("s3pb,u,w");
+    cbm_k_save(0x0400, 0x0C00);
+
+}
+ 
 void pause(void) {
 
     char ch, pausing = TRUE, pcol, dcol;
@@ -442,6 +665,7 @@ void help(void) {
     print("\022F3\222 DOWNLD  \022F4\222 UPLOAD\n");
     print("\022F5\222 BAUD    \022F6\222 PETASC\n");
     print("\022F7\222 EXIT    \022F8\222 HELP\n\n");
+    print(" \022RUN\222/\022STOP\222 PHONEBOOK\n\n");
     print("READY.\n");
     cursor_on();
 
@@ -499,7 +723,7 @@ void download(void) {
     print("\n\nXmodem Download!\n\n");
 
     print("Enter filename:\n>");
-    input();
+    input(16);
 
     if (strlen(I) > 0) {
 
@@ -655,7 +879,7 @@ void upload(void) {
     print("\n\nXmodem Upload!\n\n");
 
     print("Enter filename:\n>");
-    input();
+    input(16);
 
     if (strlen(I) > 0) {
 
@@ -844,7 +1068,7 @@ void upload(void) {
 
 }
 
-void input(void) {
+void input(char maxchars) {
 
     char ch;
     char i = 0, done = FALSE;
@@ -865,9 +1089,11 @@ void input(void) {
                 i--;
             }
         } else {
-            if (i < 40) {
+            if (i < maxchars) {
                 I[i] = ch;
                 i++;
+            } else {
+                putch(20);
             }
         }
 

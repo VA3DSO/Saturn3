@@ -54,6 +54,18 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
   - F7: exit the program
   - F8: display help
 
+## Phonebook / Dialer
+I added a new feature to Saturn 3 - if you press RUN/STOP, a phonebook will come up. If its the first time you are doing it, S3 will create a phonebook file on your disk (the same disk that S3 was loaded from) called S3PB. It is a user file (type: USR) that contains blank entries by default.
+
+When you press RUN/STOP, the listing will come up. They are all numbered (lettered?) A-T. Type Z to enter Edit mode. You can edit each entry to provide:
+- BBS Name
+- BBS URL
+- BBS Port Number (ie: 6400)
+- Your User ID
+- Your Password (optional but handy)
+
+Once you've Edited and Saved your entries, you can now just hit RUN/STOP, then press the letter of the board you'd like to call. Press RUN/STOP again to exit the phonebook.
+
 Please report any bugs to sysop@deepskies.com and we'll see what we can do to fix them.
 
 Enjoy!
