@@ -694,7 +694,7 @@ void sleep(void) {
 void nap(void) {
     int j;
     /* quasi evil */
-    for (j=0; j<333; ++j) __asm__ ("nop");
+    for (j=0; j<222; ++j) __asm__ ("nop");
 }
 
 void set_colour(char set_char) {
