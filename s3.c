@@ -262,6 +262,17 @@ char main(void) {
             if (PS == OFF) {
                 putch(f[ch]);
             } else {
+                /* FILTER C64 COLORS */
+                if ((ch == 129) || (ch == 149) || (ch == 150)) {
+                    ch = 28;
+                } else if ((ch == 151) || (ch == 152) || (ch == 155)) {
+                    ch = 5;
+                } else if (ch == 153) {
+                    ch = 30;
+                } else if (ch == 154) {
+                    ch = 31;
+                }
+
                 putch(ch);
             }
         }
