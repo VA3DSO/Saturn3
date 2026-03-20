@@ -142,6 +142,7 @@ void beep(void);
 void show_banner(char);
 void pause(void);
 void sleep(void);
+void nap(void);
 void help(void);
 void set_colour(char set_char);
 void download(void);
@@ -660,6 +661,9 @@ void pause(void) {
                     }
                 }
 
+                /* brief pause to slow down output ~1200 bps */
+                nap();      
+
             } while (pausing == FALSE);
 
         }
@@ -685,6 +689,12 @@ void help(void) {
 void sleep(void) {
     int j;
     for (j=0; j<666; ++j) __asm__ ("nop");
+}
+
+void nap(void) {
+    int j;
+    /* quasi evil */
+    for (j=0; j<333; ++j) __asm__ ("nop");
 }
 
 void set_colour(char set_char) {
