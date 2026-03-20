@@ -50,7 +50,7 @@ modem (ie: 1670) or a modern WiFi modem (ie: Strikelink). It can run at 300 baud
   - F3: download a file via Xmodem
   - F4: upload a file via Xmodem
   - F5: toggle baud rate (300/1200)
-  - F6: toggle local echo on/off
+  - F6: toggle PETSCII/ASCII
   - F7: exit the program
   - F8: display help
 
