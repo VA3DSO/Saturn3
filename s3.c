@@ -414,7 +414,9 @@ void show_phonebook(void) {
 
     do {
 
-        print("\223\022PHONE\222BOOK\n\n");
+        set_colour(TRUE);
+
+        print("\223\016\022PHONE\222BOOK\n\n");
 
         for (i = 0; i < 20; i++) {
             sprintf(I, "%c %-5.5s %-3.3s %-9.9s\n", i + 193, Phonebook[i].bbsname, Phonebook[i].id, Phonebook[i].password); print(I);
@@ -694,7 +696,7 @@ void sleep(void) {
 void nap(void) {
     int j;
     /* quasi evil */
-    for (j=0; j<222; ++j) __asm__ ("nop");
+    for (j=0; j<111; ++j) __asm__ ("nop");
 }
 
 void set_colour(char set_char) {
