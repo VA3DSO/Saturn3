@@ -1,6 +1,8 @@
 # Saturn 3
 Saturn 3 - a pausable PETSCII terminal program for the Commodore VIC-20. Also includes Xmodem upload and download.
 
+![Saturn 3](https://github.com/user-attachments/assets/4a8b4fff-c98d-4bdc-957f-a3c4c55702a4)
+
 ## The Challenge
 Using a 22-column VIC-20 can be challenging when visiting bulletin board systems run on Commodore 64's and 128's. Their 40 and 80 column formats can 
 cause havoc on a VIC-20. Obviously, the PETSCII graphics will not look right, but more importantly the text scrolls off the screen far too quickly.
