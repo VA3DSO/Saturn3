@@ -249,6 +249,9 @@ char main(void) {
             cbm_k_ckout(5);
             if (PS == OFF) {
                 cbm_k_bsout(t[ch]);
+                if (ch == 13) {
+                    cbm_k_bsout(10);    // linefeed after char[13]
+                }
             } else {
                 cbm_k_bsout(ch);
             }
