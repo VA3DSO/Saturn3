@@ -138,6 +138,7 @@ void dial(char*);
 void putch(char);
 void cursor_on(void);
 void cursor_off(void);
+void cursor_flip(void);
 void beep(void);
 void show_banner(char);
 void pause(void);
@@ -344,33 +345,43 @@ void putch(char ch) {
 void cursor_on(void) {
 
     if (CS == OFF) {
-        POKE(212, 0);
-        POKE(216, 0);
 
-        if (PEEK(204) != 0) {
-            asm("ldy #$00");
-            asm("sty $cc");
-            CS = ON;
-        }
+        /* SOLID CURSOR */
+        cursor_flip();
+        CS = ON;
 
     }
 
 }
 
 void cursor_off(void) {
+
     if (CS == ON) {
-        asm("ldy $cc");
-        asm("bne %g", exitloop);
-        asm("ldy #$01");
-        asm("sty $cd");
-        loop:
-        asm("ldy $cf");
-        asm("bne %g", loop);
-        exitloop:
-        asm("ldy #$ff");
-        asm("sty $cc");
+
+        /* SOLID CURSOR */
+        cursor_flip();
         CS = OFF;
+
     }
+}
+
+void cursor_flip(void) {
+
+    unsigned char pos;
+    unsigned int line;
+    unsigned long mem;
+    unsigned char byte;
+
+    pos = PEEK(0x00D3);
+    line = PEEK(0x00D2) * 256;
+    line = line + PEEK(0x00D1);
+
+    mem = line + pos;
+
+    byte = PEEK(mem);
+    byte = (byte ^ 0x80);
+    POKE(mem, byte);
+
 }
 
 void beep(void) {
