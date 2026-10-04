@@ -459,7 +459,7 @@ void show_phonebook(void) {
             print("\223");
 
             cbm_k_ckout(5);
-            dial("\nat\natdt ");
+            dial("\nat\natd");
             dial(Phonebook[ch].url);
             dial(":");
             dial(Phonebook[ch].port);
